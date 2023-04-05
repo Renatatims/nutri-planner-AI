@@ -23,6 +23,7 @@ const openai = new OpenAIApi(configuration);
 
 async function getResponse(userInput) {
   const prompt = userInput.trim();
+  try {
   const response = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: prompt,
@@ -34,6 +35,10 @@ async function getResponse(userInput) {
   });
 
   return response.data.choices[0].text;
+} catch (error) {
+  console.error(error);
+  return "An error occurred while fetching the data. Please try again later.";
+}
 }
 
 function NutriChat() {
@@ -64,7 +69,8 @@ function NutriChat() {
     <>
       <form onSubmit={handleSubmit} >
         <h2>Nutrition Plan</h2>
-        <FormControl required>
+        <Card variant="outlined" sx={{ m: '20px',p:'10px', borderColor: 'purple', borderWidth:'5px'}}>
+        <FormControl sx={{ p:'5px'}} required>
           <InputLabel>Gender</InputLabel>
           <Select value={gender} onChange={(e) => setGender(e.target.value)}>
             <MenuItem value="male">Male</MenuItem>
@@ -78,6 +84,7 @@ function NutriChat() {
           value={age}
           onChange={(e) => setAge(e.target.value)}
           required
+          sx={{ p:'5px'}}
         />
         <TextField
           label="Height"
@@ -85,6 +92,7 @@ function NutriChat() {
           value={height}
           onChange={(e) => setHeight(e.target.value)}
           required
+          sx={{ p:'5px'}}
         />
         <TextField
           label="Weight (kg)"
@@ -92,31 +100,36 @@ function NutriChat() {
           value={kg}
           onChange={(e) => setKg(e.target.value)}
           required
+          sx={{ p:'5px'}}
         />
         <TextField
           label="Food restriction"
           value={foodRestriction}
           onChange={(e) => setFoodRestriction(e.target.value)}
+          sx={{ p:'5px'}}
         />
         <TextField
           label="Protein count"
           type="number"
           value={proteinCount}
           onChange={(e) => setProteinCount(e.target.value)}
+          sx={{ p:'5px'}}
         />
         <TextField
           label="Calories count"
           type="number"
           value={caloriesCount}
           onChange={(e) => setCaloriesCount(e.target.value)}
+          sx={{ p:'5px'}}
         />
         <FormControlLabel
           control={<Checkbox />}
-          label="I agree to receive marketing emails from your company"
+          label=""
         />
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
+        </Card>
       </form>
       <Card variant="outlined" sx={{ m: '20px', borderColor: 'purple', borderWidth:'5px'}}>
         <CardContent>
