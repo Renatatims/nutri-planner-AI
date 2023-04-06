@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const nutriPlanSchema = require("./Nutri")
 
 const userSchema = new Schema({
   firstName: {
@@ -18,7 +19,8 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  nutriPlans: [nutriPlanSchema],
    
 });
 
