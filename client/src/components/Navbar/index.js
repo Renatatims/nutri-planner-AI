@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -6,7 +6,25 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
+//Import Login modal
+import LoginModal from "../LoginModal/index";
+
 export default function Navbar() {
+  //Login Modal
+  //Modal - useState
+  const [modalShow, setModalShow] = useState(false);
+
+  //Open Modal
+  const handleOpenModal = () => {
+    setModalShow(true);
+  };
+
+  console.log(handleOpenModal);
+
+  //Close Modal
+  const handleCloseModal = () => {
+    setModalShow(false);
+  };
   return (
     <Box>
       <AppBar
@@ -29,7 +47,6 @@ export default function Navbar() {
             sx={{
               flexGrow: 1,
               backgroundColor: "#8C2E5A",
-
             }}
           >
             <a href="/">
@@ -41,11 +58,12 @@ export default function Navbar() {
             </a>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Button sx={{ ml: "auto" }} color="inherit">
+          <Button sx={{ ml: "auto" }} color="inherit" onClick={handleOpenModal}>
             Login
           </Button>
         </Toolbar>
       </AppBar>
+      <LoginModal open={modalShow} handleClose={handleCloseModal} />
     </Box>
   );
 }
