@@ -57,7 +57,7 @@ function NutriChat() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const prompt = `I need a nutrition plan for a ${gender} who is ${age} years old, ${height} cm tall, and weighs ${kg} kg. I have ${
+    const prompt = `Direct answer only: I need a nutrition plan for a ${gender} who is ${age} years old, ${height} cm tall, and weighs ${kg} kg. I have ${
       foodRestriction
         ? "food restrictions: " + foodRestriction
         : "no food restrictions"
@@ -67,8 +67,23 @@ function NutriChat() {
         : "enough protein"
     }, and ${
       caloriesCount ? caloriesCount + " calories" : "enough calories"
-    }. Also consider the following information:${additionalInfo};`;
+    }. To build this meal plan consider the following information:${additionalInfo}.  
+    I want the response to be rendered in the specific format, and please don't add any other information before or after the meal plan (don't want the answer to start with a paragraph, don't want any "note" included after the meal plan, just the meal plan - answer starting with breakfast): 
+    "Breakfast
+    - (breakfast info inside)
+  Snack
+    - (snack info inside)
+  Lunch
+   - (Lunch info inside)
+  Snack
+    - (snack info inside)
+  Dinner
+    - (dinner info inside)
+  Snack
+    - (snack info inside)
+  "`;
     const response = await getResponse(prompt);
+    console.log(response);
     setResponse(response);
   };
 
@@ -184,9 +199,22 @@ function NutriChat() {
         variant="outlined"
         sx={{ m: "20px", borderColor: "#8C2E5A", borderWidth: "5px" }}
       >
-        <CardContent>
-          <p>{response}</p>
-        </CardContent>
+        {response ? (
+          <>
+            {response.split("\n").map((meal, index) => {
+              const [mealInfo] = meal.split(":");
+              return (
+                <div className="meal-section" key={index}>
+                  <h2>{mealInfo}</h2>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <CardContent>
+            <p>Loading...</p>
+          </CardContent>
+        )}
       </Card>
     </>
   );
