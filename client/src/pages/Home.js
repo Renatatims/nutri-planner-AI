@@ -12,9 +12,11 @@ import {
   CardContent,
   Box,
   Stack,
+  IconButton,
 } from "@mui/material";
 
 import { Configuration, OpenAIApi } from "openai";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -68,7 +70,7 @@ function NutriChat() {
     }, and ${
       caloriesCount ? caloriesCount + " calories" : "enough calories"
     }. To build this meal plan consider the following information:${additionalInfo}.  
-    I want the response to be rendered in the specific format, and please don't add any other information before or after the meal plan (don't want the answer to start with a paragraph, don't want any "note" included after the meal plan, just the meal plan - answer starting with breakfast): 
+    I want the response to be rendered in the specific format, and please don't add any other information before or after the meal plan ( I don't want the answer to start with a paragraph, don't want any "note" included after the meal plan, just the meal plan - answer starting with breakfast, and every single food in a bullet point): 
     "Breakfast
     - (breakfast info inside)
   Snack
@@ -202,11 +204,32 @@ function NutriChat() {
         {response ? (
           <>
             {response.split("\n").map((meal, index) => {
-              const [mealInfo] = meal.split(":");
-              return (
-                <div className="meal-section" key={index}>
-                  <h2>{mealInfo}</h2>
-                </div>
+             const [mealInfo, mealDetails] = meal.split(":");
+             const isHeader = [
+               "Breakfast",
+               "Snack",
+               "Lunch",
+               "Dinner",
+             ].includes(mealInfo.trim());
+             return (
+               <div className="meal-section" key={index}>
+                 {isHeader ? (
+                   <h2
+                     style={{
+                       paddingLeft: "20px",
+                       fontWeight: "bold",
+                     }}
+                   >
+                     {mealInfo}
+                   </h2>
+                 ) : (
+                   <p style={{
+                     paddingLeft: "30px", fontSize:20
+                    }}>
+                     {mealInfo}{mealDetails}
+                   </p>
+                 )}
+               </div>
               );
             })}
           </>
@@ -215,6 +238,7 @@ function NutriChat() {
             <p>Loading...</p>
           </CardContent>
         )}
+        <IconButton><FavoriteBorderIcon/></IconButton>
       </Card>
     </>
   );
