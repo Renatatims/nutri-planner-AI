@@ -4,11 +4,16 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
 import MenuIcon from "@mui/icons-material/Menu";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 //Import Login modal
 import LoginModal from "../LoginModal/index";
 import SignupModal from "../SignupModal/index";
+import Auth from "../../utils/auth";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   //Login Modal
@@ -85,6 +90,34 @@ export default function Navbar() {
           >
             Signup
           </Button>
+          {Auth.loggedIn() ? (
+             <div>
+            <Link to="/Favorites">
+            <IconButton
+              size="large"
+              aria-label="heart"
+              sx={{ ml: 2, color:"white" }}
+            >
+              <Badge badgeContent={0} color="error">
+                <FavoriteIcon />
+              </Badge>
+            </IconButton>
+            </Link>
+            <IconButton
+             size="large"
+             aria-label="logout"
+             color="inherit"
+             onClick={() => {
+              Auth.logout();
+            }}
+           >
+             <Badge badgeContent={0} color="error">
+               <ExitToAppIcon />
+             </Badge>
+           </IconButton>
+           </div>
+            
+            ) : null}   
         </Toolbar>
       </AppBar>
       <LoginModal open={modalShow} handleClose={handleCloseModal} />
