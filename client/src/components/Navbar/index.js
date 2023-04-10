@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 //Import Login modal
 import LoginModal from "../LoginModal/index";
+import SignupModal from "../SignupModal/index";
 
 export default function Navbar() {
   //Login Modal
@@ -24,6 +25,22 @@ export default function Navbar() {
   //Close Modal
   const handleCloseModal = () => {
     setModalShow(false);
+  };
+
+  //Signup Modal
+  //Modal - useState
+  const [modalSignupShow, setSignupModalShow] = useState(false);
+
+  //Open Modal
+  const handleOpenSignupModal = () => {
+    setSignupModalShow(true);
+  };
+
+  console.log(handleOpenModal);
+
+  //Close Modal
+  const handleCloseSignupModal = () => {
+    setSignupModalShow(false);
   };
   return (
     <Box>
@@ -62,8 +79,8 @@ export default function Navbar() {
             Login
           </Button>
           <Button
-            type="submit"
             variant="contained"
+            onClick={handleOpenSignupModal}
             sx={{ margin: 2, backgroundColor:"#8C2E5A" }}
           >
             Signup
@@ -71,6 +88,7 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
       <LoginModal open={modalShow} handleClose={handleCloseModal} />
+      <SignupModal open={modalSignupShow} handleClose={handleCloseSignupModal} />
     </Box>
   );
 }
