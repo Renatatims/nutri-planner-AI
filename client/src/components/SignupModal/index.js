@@ -109,6 +109,30 @@ function SignupModal(props) {
                 sx={{ margin: 2 }}
               />
               <TextField
+                id="firstName"
+                label="First Name"
+                type="firstName"
+                name="firstName"
+                value={formState.firstName}
+                onChange={handleChange}
+                required
+                fullWidth
+                autoFocus
+                sx={{ margin: 2 }}
+              />
+              <TextField
+                id="lastName"
+                label="Last Name"
+                type="lastName"
+                name="lastName"
+                value={formState.lastName}
+                onChange={handleChange}
+                required
+                fullWidth
+                autoFocus
+                sx={{ margin: 2 }}
+              />
+              <TextField
                 id="password"
                 label="Password"
                 type="password"
