@@ -61,6 +61,13 @@ export default function Navbar() {
           <Button sx={{ ml: "auto" }} color="inherit" onClick={handleOpenModal}>
             Login
           </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ margin: 2, backgroundColor:"#8C2E5A" }}
+          >
+            Signup
+          </Button>
         </Toolbar>
       </AppBar>
       <LoginModal open={modalShow} handleClose={handleCloseModal} />
