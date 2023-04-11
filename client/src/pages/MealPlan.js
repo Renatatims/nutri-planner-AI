@@ -10,14 +10,46 @@ const SavedMealPlans = () => {
   const userData = data?.user || {};
 
   return (
-    <Card
-      variant="outlined"
-      sx={{ m: "20px", borderColor: "#8C2E5A", borderWidth: "5px" }}
-    >
+    <>
       {userData.nutriPlans?.map((nutriPlan, index) => (
-        <div key={index}>{nutriPlan.meals}</div>
+        <Card
+          key={index}
+          variant="outlined"
+          sx={{ m: "20px", borderColor: "#8C2E5A", borderWidth: "5px" }}
+        >
+          {nutriPlan.meals.split("\n").map((meal, index) => {
+            const [mealInfo, mealDetails] = meal.split(":");
+            const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(
+              mealInfo.trim()
+            );
+            return (
+              <div className="meal-section" key={index}>
+                {isHeader ? (
+                  <h2
+                    style={{
+                      paddingLeft: "20px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {mealInfo}
+                  </h2>
+                ) : (
+                  <p
+                    style={{
+                      paddingLeft: "30px",
+                      fontSize: 20,
+                    }}
+                  >
+                    {mealInfo}
+                    {mealDetails}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </Card>
       ))}
-    </Card>
+    </>
   );
 };
 
