@@ -264,7 +264,7 @@ function NutriChat() {
           </CardContent>
         )}
         <IconButton onClick={handleSaveMealPlan}>
-          <FavoriteBorderIcon></FavoriteBorderIcon>
+          Add to my favorites <FavoriteBorderIcon></FavoriteBorderIcon>
         </IconButton>
       </Card>
     </>
