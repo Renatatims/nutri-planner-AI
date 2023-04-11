@@ -13,6 +13,10 @@ const typeDefs = gql`
     meals: String
   }
 
+  input NutriInput {
+    meals: String!
+  }
+
   type Auth {
     token: ID
     user: User
@@ -30,6 +34,7 @@ const typeDefs = gql`
       email: String!
       password: String!
     ): Auth
+    saveNutriPlan(nutriData: NutriInput!): User
   }
 `;
 module.exports = typeDefs;
