@@ -42,16 +42,16 @@ const resolvers = {
     },
 
     // Save a meal Plan to user's profile
-    async saveNutriPlan(parent, { nutriData }, { user }) {
-      if (!user) {
-        throw new AuthenticationError(
-          "You need to be logged in to save a meal plan"
+    saveNutriPlan: async (parent, { nutriData }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { nutriPlans: nutriData } },
+          { new: true }
         );
+        return updatedUser;
       }
-      // Add the new nutri plan to the user's nutriPlans array
-      user.nutriPlans.push(nutriData);
-      // Save the updated user to the database and return it
-      return await user.save();
+      throw new AuthenticationError("You need to be logged in!");
     },
   },
 };

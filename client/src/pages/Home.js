@@ -16,7 +16,11 @@ import {
 } from "@mui/material";
 
 import { Configuration, OpenAIApi } from "openai";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { SAVE_NUTRI_PLAN } from "../utils/mutations";
+
+// Apollo useMutation() Hook
+import { useMutation } from "@apollo/client";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -88,7 +92,24 @@ function NutriChat() {
     console.log(response);
     setResponse(response);
   };
+  const [saveNutriPlan] = useMutation(SAVE_NUTRI_PLAN);
 
+ // Define the handleSaveMealPlan function
+  const handleSaveMealPlan = async () => {
+    try {
+      // Call the saveNutriPlan mutation with the nutriPlan object
+      await saveNutriPlan({ variables: { nutriData: { meals: response } } });
+
+      // Show a success message to the user
+      alert("Nutri plan saved successfully!");
+    } catch (error) {
+      console.error(error);
+
+      // Show an error message to the user
+      alert("An error occurred while saving the nutri plan. Please try again later.");
+    }
+  };
+ 
   return (
     <>
       <Box
@@ -204,32 +225,36 @@ function NutriChat() {
         {response ? (
           <>
             {response.split("\n").map((meal, index) => {
-             const [mealInfo, mealDetails] = meal.split(":");
-             const isHeader = [
-               "Breakfast",
-               "Snack",
-               "Lunch",
-               "Dinner",
-             ].includes(mealInfo.trim());
-             return (
-               <div className="meal-section" key={index}>
-                 {isHeader ? (
-                   <h2
-                     style={{
-                       paddingLeft: "20px",
-                       fontWeight: "bold",
-                     }}
-                   >
-                     {mealInfo}
-                   </h2>
-                 ) : (
-                   <p style={{
-                     paddingLeft: "30px", fontSize:20
-                    }}>
-                     {mealInfo}{mealDetails}
-                   </p>
-                 )}
-               </div>
+              const [mealInfo, mealDetails] = meal.split(":");
+              const isHeader = [
+                "Breakfast",
+                "Snack",
+                "Lunch",
+                "Dinner",
+              ].includes(mealInfo.trim());
+              return (
+                <div className="meal-section" key={index}>
+                  {isHeader ? (
+                    <h2
+                      style={{
+                        paddingLeft: "20px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {mealInfo}
+                    </h2>
+                  ) : (
+                    <p
+                      style={{
+                        paddingLeft: "30px",
+                        fontSize: 20,
+                      }}
+                    >
+                      {mealInfo}
+                      {mealDetails}
+                    </p>
+                  )}
+                </div>
               );
             })}
           </>
@@ -238,7 +263,9 @@ function NutriChat() {
             <p>Loading...</p>
           </CardContent>
         )}
-        <IconButton><FavoriteBorderIcon/></IconButton>
+        <IconButton onClick={handleSaveMealPlan}>
+          <FavoriteBorderIcon></FavoriteBorderIcon>
+        </IconButton>
       </Card>
     </>
   );

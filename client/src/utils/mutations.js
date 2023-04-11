@@ -25,3 +25,14 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const SAVE_NUTRI_PLAN = gql`
+  mutation saveNutriPlan($nutriData: NutriInput!) {
+    saveNutriPlan(nutriData: $nutriData) {
+      _id
+      nutriPlans {
+        meals
+      }
+    }
+  }
+`;
