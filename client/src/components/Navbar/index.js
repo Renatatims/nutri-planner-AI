@@ -92,7 +92,7 @@ export default function Navbar() {
           </Button>
           {Auth.loggedIn() ? (
              <div>
-            <Link to="/Favorites">
+            <Link to="/MealPlan">
             <IconButton
               size="large"
               aria-label="heart"
