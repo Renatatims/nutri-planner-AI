@@ -1,5 +1,5 @@
 {
-  "name": "nutri-gpt",
+  "name": "nutri-planner-AI",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Renatatims/nutri-gpt.git"
+    "url": "git+https://github.com/Renatatims/nutri-planner-AI.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Renatatims/nutri-gpt/issues"
+    "url": "https://github.com/Renatatims/nutri-planner-AI/issues"
   },
-  "homepage": "https://github.com/Renatatims/nutri-gpt#readme",
+  "homepage": "https://github.com/Renatatims/nutri-planner-AI#readme",
   "dependencies": {
     "dotenv": "^16.0.3",
     "openai": "^3.2.1"

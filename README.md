@@ -1,1 +1,1 @@
-# nutri-gpt
+# nutri-planner-AI
