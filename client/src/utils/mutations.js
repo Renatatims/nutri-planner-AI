@@ -31,8 +31,25 @@ export const SAVE_NUTRI_PLAN = gql`
     saveNutriPlan(nutriData: $nutriData) {
       _id
       nutriPlans {
+        _id
         meals
+        title
+        user {
+          _id
+          firstName
+          lastName
+          email
+        }
       }
+    }
+  }
+`;
+
+export const UPDATE_NUTRI_PLAN_TITLE = gql`
+  mutation updateNutriPlanTitle($nutriPlanId: ID!, $title: String!) {
+    updateNutriPlanTitle(nutriPlanId: $nutriPlanId, title: $title) {
+      _id
+      title
     }
   }
 `;

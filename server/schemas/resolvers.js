@@ -1,5 +1,6 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
+const Nutri = require("../models/Nutri");
 const { signToken } = require("../utils/auth");
 
 const resolvers = {
@@ -12,6 +13,15 @@ const resolvers = {
         );
       }
       throw new AuthenticationError("Not logged in");
+    },
+    nutriPlans: async (parent, args, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+      const nutriPlans = await Nutri.find({ user: context.user._id }).populate(
+        "user"
+      );
+      return nutriPlans;
     },
   },
   //Mutations
@@ -43,15 +53,45 @@ const resolvers = {
 
     // Save a meal Plan to user's profile
     saveNutriPlan: async (parent, { nutriData }, context) => {
-      if (context.user) {
-        const updatedUser = await User.findByIdAndUpdate(
-          { _id: context.user._id },
-          { $push: { nutriPlans: nutriData } },
-          { new: true }
-        );
-        return updatedUser;
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
       }
-      throw new AuthenticationError("You need to be logged in!");
+
+      const user = await User.findById(context.user._id);
+
+      const defaultTitle = `Meal Plan ${
+        user.nutriPlans ? user.nutriPlans.length + 1 : 1
+      }`;
+
+      const nutriPlan = new Nutri({
+        meals: nutriData.meals,
+        title: nutriData.title || defaultTitle,
+        user: context.user._id,
+      });
+
+      const savedNutriPlan = await nutriPlan.save();
+
+      user.nutriPlans.push(savedNutriPlan);
+      await user.save();
+
+      return user;
+    },
+
+    // Update meal Plan title
+    updateNutriPlanTitle: async (parent, { nutriPlanId, title }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+      const nutriPlan = await Nutri.findById(nutriPlanId);
+
+      if (!nutriPlan) {
+        throw new UserInputError("No NutriPlan found with that ID");
+      }
+      //Update the title property with the new title input and save new title
+      nutriPlan.title = title;
+      const updatedNutriPlan = await nutriPlan.save();
+
+      return updatedNutriPlan;
     },
   },
 };

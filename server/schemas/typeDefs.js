@@ -10,10 +10,14 @@ const typeDefs = gql`
   }
 
   type Nutri {
+    _id: ID!
+    title: String!
     meals: String
+    user: User
   }
 
   input NutriInput {
+    title: String
     meals: String!
   }
 
@@ -24,6 +28,7 @@ const typeDefs = gql`
 
   type Query {
     user: User
+    nutriPlans: [Nutri]
   }
 
   type Mutation {
@@ -35,6 +40,7 @@ const typeDefs = gql`
       password: String!
     ): Auth
     saveNutriPlan(nutriData: NutriInput!): User
+    updateNutriPlanTitle(nutriPlanId: ID!, title: String): Nutri
   }
 `;
 module.exports = typeDefs;
