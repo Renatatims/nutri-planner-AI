@@ -10,10 +10,13 @@ const typeDefs = gql`
   }
 
   type Nutri {
+    _id: ID!
+    title: String!
     meals: String
   }
 
   input NutriInput {
+    title: String!
     meals: String!
   }
 

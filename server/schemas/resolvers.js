@@ -46,10 +46,10 @@ const resolvers = {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $push: { nutriPlans: nutriData } },
+          { $push: { nutriPlans: { title: nutriData.title, meals: nutriData.meals } } },
           { new: true }
         );
-        return updatedUser;
+        return updatedUser.nutriPlans;
       }
       throw new AuthenticationError("You need to be logged in!");
     },

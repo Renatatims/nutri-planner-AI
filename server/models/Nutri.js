@@ -5,7 +5,11 @@ const nutriPlanSchema = new Schema({
     type: String,
     required: true,
     trim: true
-  }
+  },
+  title: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = nutriPlanSchema;
