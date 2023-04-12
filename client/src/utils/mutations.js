@@ -44,3 +44,12 @@ export const SAVE_NUTRI_PLAN = gql`
     }
   }
 `;
+
+export const UPDATE_NUTRI_PLAN_TITLE = gql`
+  mutation updateNutriPlanTitle($nutriPlanId: ID!, $title: String!) {
+    updateNutriPlanTitle(nutriPlanId: $nutriPlanId, title: $title) {
+      _id
+      title
+    }
+  }
+`;
