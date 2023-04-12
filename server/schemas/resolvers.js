@@ -14,6 +14,15 @@ const resolvers = {
       }
       throw new AuthenticationError("Not logged in");
     },
+    nutriPlans: async (parent, args, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+      const nutriPlans = await Nutri.find({ user: context.user._id }).populate(
+        "user"
+      );
+      return nutriPlans;
+    },
   },
   //Mutations
   Mutation: {

@@ -3,15 +3,16 @@ import { Card } from "@mui/material";
 
 //use Query Hook
 import { useQuery } from "@apollo/client";
-import { QUERY_USER } from "../utils/queries";
+import { QUERY_NUTRI_PLANS } from "../utils/queries"; 
 
 const SavedMealPlans = () => {
-  const { data } = useQuery(QUERY_USER);
-  const userData = data?.user || {};
+  const { data } = useQuery(QUERY_NUTRI_PLANS);
+  console.log(data);
+  const nutriPlans = data?.nutriPlans || [];;
 
   return (
     <>
-      {userData.nutriPlans?.map((nutriPlan, index) => (
+      {nutriPlans?.map((nutriPlan, index) => (
         <Card
           key={index}
           variant="outlined"

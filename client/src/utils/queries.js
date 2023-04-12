@@ -21,3 +21,19 @@ export const QUERY_USER = gql`
     }
   }
 `;
+
+export const QUERY_NUTRI_PLANS = gql`
+  query getNutriPlans {
+    nutriPlans {
+      _id
+      title
+      meals
+      user {
+        _id
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`;

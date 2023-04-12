@@ -28,6 +28,7 @@ const typeDefs = gql`
 
   type Query {
     user: User
+    nutriPlans: [Nutri]
   }
 
   type Mutation {
