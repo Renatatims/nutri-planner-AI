@@ -76,6 +76,23 @@ const resolvers = {
 
       return user;
     },
+
+    // Update meal Plan title
+    updateNutriPlanTitle: async (parent, { nutriPlanId, title }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+      const nutriPlan = await Nutri.findById(nutriPlanId);
+
+      if (!nutriPlan) {
+        throw new UserInputError("No NutriPlan found with that ID");
+      }
+      //Update the title property with the new title input and save new title
+      nutriPlan.title = title;
+      const updatedNutriPlan = await nutriPlan.save();
+
+      return updatedNutriPlan;
+    },
   },
 };
 

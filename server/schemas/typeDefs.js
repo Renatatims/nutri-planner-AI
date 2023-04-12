@@ -40,6 +40,7 @@ const typeDefs = gql`
       password: String!
     ): Auth
     saveNutriPlan(nutriData: NutriInput!): User
+    updateNutriPlanTitle(nutriPlanId: ID!, title: String): Nutri
   }
 `;
 module.exports = typeDefs;
