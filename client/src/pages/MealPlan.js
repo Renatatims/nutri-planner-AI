@@ -17,6 +17,7 @@ const SavedMealPlans = () => {
           variant="outlined"
           sx={{ m: "20px", borderColor: "#8C2E5A", borderWidth: "5px" }}
         >
+          <h2>{nutriPlan.title}</h2>
           {nutriPlan.meals.split("\n").map((meal, index) => {
             const [mealInfo, mealDetails] = meal.split(":");
             const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(

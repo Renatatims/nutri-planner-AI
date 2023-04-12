@@ -31,7 +31,15 @@ export const SAVE_NUTRI_PLAN = gql`
     saveNutriPlan(nutriData: $nutriData) {
       _id
       nutriPlans {
+        _id
         meals
+        title
+        user {
+          _id
+          firstName
+          lastName
+          email
+        }
       }
     }
   }

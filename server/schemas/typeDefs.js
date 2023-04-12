@@ -13,10 +13,11 @@ const typeDefs = gql`
     _id: ID!
     title: String!
     meals: String
+    user: User
   }
 
   input NutriInput {
-    title: String!
+    title: String
     meals: String!
   }
 

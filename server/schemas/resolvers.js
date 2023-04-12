@@ -1,5 +1,6 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
+const Nutri = require("../models/Nutri");
 const { signToken } = require("../utils/auth");
 
 const resolvers = {
@@ -43,15 +44,28 @@ const resolvers = {
 
     // Save a meal Plan to user's profile
     saveNutriPlan: async (parent, { nutriData }, context) => {
-      if (context.user) {
-        const updatedUser = await User.findByIdAndUpdate(
-          { _id: context.user._id },
-          { $push: { nutriPlans: { title: nutriData.title, meals: nutriData.meals } } },
-          { new: true }
-        );
-        return updatedUser.nutriPlans;
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
       }
-      throw new AuthenticationError("You need to be logged in!");
+
+      const user = await User.findById(context.user._id);
+
+      const defaultTitle = `Meal Plan ${
+        user.nutriPlans ? user.nutriPlans.length + 1 : 1
+      }`;
+
+      const nutriPlan = new Nutri({
+        meals: nutriData.meals,
+        title: nutriData.title || defaultTitle,
+        user: context.user._id,
+      });
+
+      const savedNutriPlan = await nutriPlan.save();
+
+      user.nutriPlans.push(savedNutriPlan);
+      await user.save();
+
+      return user;
     },
   },
 };

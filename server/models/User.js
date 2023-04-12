@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require('bcrypt');
-const nutriPlanSchema = require("./Nutri");
 
 const userSchema = new Schema({
   firstName: {
@@ -21,7 +20,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  nutriPlans: [nutriPlanSchema],
+  nutriPlans: [{
+    type: Schema.Types.ObjectId,
+    ref: "Nutri",
+  }],
 });
 
 // middleware to create password

@@ -8,7 +8,15 @@ export const QUERY_USER = gql`
       lastName
       email
       nutriPlans {
+        _id
         meals
+        title
+        user {
+          _id
+          firstName
+          lastName
+          email
+        }
       }    
     }
   }
