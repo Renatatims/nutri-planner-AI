@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
 
 //use Query Hook
 import { useQuery } from "@apollo/client";
@@ -47,7 +48,13 @@ const SavedMealPlans = () => {
           variant="outlined"
           sx={{ m: "20px", borderColor: "#8C2E5A", borderWidth: "5px" }}
         >
-          <h2>
+          <h2
+            style={{
+              paddingLeft: "80px",
+              fontWeight: "bold",
+              color: "#8C2E5A",
+            }}
+          >
             {isEditing ? (
               <TextField
                 value={editedTitle}
@@ -63,10 +70,10 @@ const SavedMealPlans = () => {
               </>
             )}
             {isEditing && (
-            <IconButton onClick={() => handleSaveTitle(nutriPlan._id)}>
-              Save
-            </IconButton>
-          )}
+              <IconButton onClick={() => handleSaveTitle(nutriPlan._id)}>
+                <DoneIcon />
+              </IconButton>
+            )}
           </h2>
           {nutriPlan.meals.split("\n").map((meal, index) => {
             const [mealInfo, mealDetails] = meal.split(":");
