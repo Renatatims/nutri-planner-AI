@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 //use Query Hook
 import { useQuery } from "@apollo/client";
@@ -13,31 +14,51 @@ import { UPDATE_NUTRI_PLAN_TITLE } from "../utils/mutations";
 
 const SavedMealPlans = () => {
   //Define state variables for editing the title
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState({});
   const [editedTitle, setEditedTitle] = useState("");
 
+  //Manage the expanded state of the meal plans
+  const [expandedMealPlan, setExpandedMealPlan] = useState(null);
+
+  // QUERY_NUTRI_PLANS query to get the list of meal plans from the database
   const { data } = useQuery(QUERY_NUTRI_PLANS);
   console.log(data);
   const nutriPlans = data?.nutriPlans || [];
 
+  // UPDATE_NUTRI_PLAN_TITLE mutation - to update a meal plan title
   const [updateTitle] = useMutation(UPDATE_NUTRI_PLAN_TITLE);
 
+  // handleEditTitle function - to handle the edit title button click event
   const handleEditTitle = (nutriPlanId) => {
-    setIsEditing(true);
+    // Set the editing state of the title with the given nutriPlanId to true
+    setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: true }));
   };
 
+  //handleSaveTitle function - save title button click event
   const handleSaveTitle = async (nutriPlanId) => {
     if (editedTitle.trim() !== "") {
       await updateTitle({
         variables: { nutriPlanId, title: editedTitle },
+        // Refetch the QUERY_NUTRI_PLANS query to update the list of meal plans with the new title
         refetchQueries: [{ query: QUERY_NUTRI_PLANS }],
       });
-      setIsEditing(false);
+      // Set the editing state of the title with the given nutriPlanId to false
+      setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: false }));
     }
   };
 
+  //handleTitleChange function -  handle the input field's change event
   const handleTitleChange = (e) => {
     setEditedTitle(e.target.value);
+  };
+
+  // Function to toggle the meal plan visbility
+  const toggleMealPlan = (nutriPlanId) => {
+    if (expandedMealPlan === nutriPlanId) {
+      setExpandedMealPlan(null);
+    } else {
+      setExpandedMealPlan(nutriPlanId);
+    }
   };
 
   return (
@@ -55,7 +76,7 @@ const SavedMealPlans = () => {
               color: "#8C2E5A",
             }}
           >
-            {isEditing ? (
+            {isEditing[nutriPlan._id] ? (
               <TextField
                 value={editedTitle}
                 onChange={handleTitleChange}
@@ -69,7 +90,7 @@ const SavedMealPlans = () => {
                 </IconButton>
               </>
             )}
-            {isEditing && (
+            {isEditing[nutriPlan._id] && (
               <IconButton onClick={() => handleSaveTitle(nutriPlan._id)}>
                 <DoneIcon />
               </IconButton>
@@ -80,6 +101,9 @@ const SavedMealPlans = () => {
             const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(
               mealInfo.trim()
             );
+            if (expandedMealPlan !== nutriPlan._id && index >= 3) {
+              return null; // preview meal plan - no more than 3 lines
+            }
             return (
               <div className="meal-section" key={index}>
                 {isHeader ? (
@@ -105,6 +129,9 @@ const SavedMealPlans = () => {
               </div>
             );
           })}
+          <IconButton onClick={() => toggleMealPlan(nutriPlan._id)}>
+            <MoreHorizIcon />
+          </IconButton>
         </Card>
       ))}
     </>
