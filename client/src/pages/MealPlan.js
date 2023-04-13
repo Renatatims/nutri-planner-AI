@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 //use Query Hook
 import { useQuery } from "@apollo/client";
@@ -16,7 +17,10 @@ const SavedMealPlans = () => {
   const [isEditing, setIsEditing] = useState({});
   const [editedTitle, setEditedTitle] = useState("");
 
-   // QUERY_NUTRI_PLANS query to get the list of meal plans from the database
+  //Manage the expanded state of the meal plans
+  const [expandedMealPlan, setExpandedMealPlan] = useState(null);
+
+  // QUERY_NUTRI_PLANS query to get the list of meal plans from the database
   const { data } = useQuery(QUERY_NUTRI_PLANS);
   console.log(data);
   const nutriPlans = data?.nutriPlans || [];
@@ -29,7 +33,7 @@ const SavedMealPlans = () => {
     // Set the editing state of the title with the given nutriPlanId to true
     setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: true }));
   };
-  
+
   //handleSaveTitle function - save title button click event
   const handleSaveTitle = async (nutriPlanId) => {
     if (editedTitle.trim() !== "") {
@@ -46,6 +50,15 @@ const SavedMealPlans = () => {
   //handleTitleChange function -  handle the input field's change event
   const handleTitleChange = (e) => {
     setEditedTitle(e.target.value);
+  };
+
+  // Function to toggle the meal plan visbility
+  const toggleMealPlan = (nutriPlanId) => {
+    if (expandedMealPlan === nutriPlanId) {
+      setExpandedMealPlan(null);
+    } else {
+      setExpandedMealPlan(nutriPlanId);
+    }
   };
 
   return (
@@ -88,6 +101,9 @@ const SavedMealPlans = () => {
             const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(
               mealInfo.trim()
             );
+            if (expandedMealPlan !== nutriPlan._id && index >= 3) {
+              return null; // preview meal plan - no more than 3 lines
+            }
             return (
               <div className="meal-section" key={index}>
                 {isHeader ? (
@@ -113,6 +129,9 @@ const SavedMealPlans = () => {
               </div>
             );
           })}
+          <IconButton onClick={() => toggleMealPlan(nutriPlan._id)}>
+            <MoreHorizIcon />
+          </IconButton>
         </Card>
       ))}
     </>
