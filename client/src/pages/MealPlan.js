@@ -13,29 +13,37 @@ import { UPDATE_NUTRI_PLAN_TITLE } from "../utils/mutations";
 
 const SavedMealPlans = () => {
   //Define state variables for editing the title
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState({});
   const [editedTitle, setEditedTitle] = useState("");
 
+   // QUERY_NUTRI_PLANS query to get the list of meal plans from the database
   const { data } = useQuery(QUERY_NUTRI_PLANS);
   console.log(data);
   const nutriPlans = data?.nutriPlans || [];
 
+  // UPDATE_NUTRI_PLAN_TITLE mutation - to update a meal plan title
   const [updateTitle] = useMutation(UPDATE_NUTRI_PLAN_TITLE);
 
+  // handleEditTitle function - to handle the edit title button click event
   const handleEditTitle = (nutriPlanId) => {
-    setIsEditing(true);
+    // Set the editing state of the title with the given nutriPlanId to true
+    setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: true }));
   };
-
+  
+  //handleSaveTitle function - save title button click event
   const handleSaveTitle = async (nutriPlanId) => {
     if (editedTitle.trim() !== "") {
       await updateTitle({
         variables: { nutriPlanId, title: editedTitle },
+        // Refetch the QUERY_NUTRI_PLANS query to update the list of meal plans with the new title
         refetchQueries: [{ query: QUERY_NUTRI_PLANS }],
       });
-      setIsEditing(false);
+      // Set the editing state of the title with the given nutriPlanId to false
+      setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: false }));
     }
   };
 
+  //handleTitleChange function -  handle the input field's change event
   const handleTitleChange = (e) => {
     setEditedTitle(e.target.value);
   };
@@ -55,7 +63,7 @@ const SavedMealPlans = () => {
               color: "#8C2E5A",
             }}
           >
-            {isEditing ? (
+            {isEditing[nutriPlan._id] ? (
               <TextField
                 value={editedTitle}
                 onChange={handleTitleChange}
@@ -69,7 +77,7 @@ const SavedMealPlans = () => {
                 </IconButton>
               </>
             )}
-            {isEditing && (
+            {isEditing[nutriPlan._id] && (
               <IconButton onClick={() => handleSaveTitle(nutriPlan._id)}>
                 <DoneIcon />
               </IconButton>
