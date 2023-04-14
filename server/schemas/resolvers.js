@@ -1,4 +1,7 @@
-const { AuthenticationError } = require("apollo-server-express");
+const {
+  AuthenticationError,
+  UserInputError,
+} = require("apollo-server-express");
 const { User } = require("../models");
 const Nutri = require("../models/Nutri");
 const { signToken } = require("../utils/auth");
@@ -71,6 +74,11 @@ const resolvers = {
 
       const savedNutriPlan = await nutriPlan.save();
 
+      // Validate meal plan title
+      if (savedNutriPlan.title === null) {
+        throw new UserInputError("Meal plan title cannot be null.");
+      }
+
       user.nutriPlans.push(savedNutriPlan);
       await user.save();
 
@@ -120,7 +128,7 @@ const resolvers = {
       await Nutri.findByIdAndDelete(nutriPlanId);
 
       return user;
-    }, 
+    },
   },
 };
 

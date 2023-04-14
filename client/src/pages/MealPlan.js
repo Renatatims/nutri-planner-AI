@@ -3,14 +3,19 @@ import { Card, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Auth from "../utils/auth";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 //use Query Hook
 import { useQuery } from "@apollo/client";
-import { QUERY_NUTRI_PLANS } from "../utils/queries";
+import { QUERY_USER, QUERY_NUTRI_PLANS } from "../utils/queries";
 
 //use Mutation to update the title
 import { useMutation } from "@apollo/client";
 import { UPDATE_NUTRI_PLAN_TITLE } from "../utils/mutations";
+
+// Mutation to delete a meal plan
+import { DELETE_NUTRI_PLAN } from "../utils/mutations";
 
 const SavedMealPlans = () => {
   //Define state variables for editing the title
@@ -19,6 +24,11 @@ const SavedMealPlans = () => {
 
   //Manage the expanded state of the meal plans
   const [expandedMealPlan, setExpandedMealPlan] = useState(null);
+
+  //Delete Meal Plan mutation
+  const [deleteNutriPlan] = useMutation(DELETE_NUTRI_PLAN, {
+    refetchQueries: [{ query: QUERY_USER }],
+  });
 
   // QUERY_NUTRI_PLANS query to get the list of meal plans from the database
   const { data } = useQuery(QUERY_NUTRI_PLANS);
@@ -58,6 +68,24 @@ const SavedMealPlans = () => {
       setExpandedMealPlan(null);
     } else {
       setExpandedMealPlan(nutriPlanId);
+    }
+  };
+
+  // Delete meal Plan
+  const handleDeleteNutriPlan = async (nutriPlanId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    if (!token) {
+      return false;
+    }
+    try {
+      const { data } = await deleteNutriPlan({
+        variables: { nutriPlanId },
+      });
+
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+
     }
   };
 
@@ -131,6 +159,9 @@ const SavedMealPlans = () => {
           })}
           <IconButton onClick={() => toggleMealPlan(nutriPlan._id)}>
             <MoreHorizIcon />
+          </IconButton>
+          <IconButton onClick={() => handleDeleteNutriPlan(nutriPlan._id)}>
+            <DeleteIcon />
           </IconButton>
         </Card>
       ))}
