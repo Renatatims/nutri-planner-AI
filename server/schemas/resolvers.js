@@ -93,6 +93,34 @@ const resolvers = {
 
       return updatedNutriPlan;
     },
+
+    // Delete a meal plan from user's profile
+    deleteNutriPlan: async (parent, { nutriPlanId }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+
+      const user = await User.findById(context.user._id);
+
+      // Check if the user has the meal plan
+      const nutriPlanIndex = user.nutriPlans.findIndex(
+        (plan) => plan._id.toString() === nutriPlanId
+      );
+      if (nutriPlanIndex === -1) {
+        throw new UserInputError(
+          "You don't have this meal plan in your profile."
+        );
+      }
+
+      // Remove the meal plan from the user's nutriPlans array
+      user.nutriPlans.splice(nutriPlanIndex, 1);
+      await user.save();
+
+      // Delete the meal plan from Nutri model
+      await Nutri.findByIdAndDelete(nutriPlanId);
+
+      return user;
+    }, 
   },
 };
 
