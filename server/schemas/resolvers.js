@@ -75,7 +75,7 @@ const resolvers = {
       const savedNutriPlan = await nutriPlan.save();
 
       // Validate meal plan title
-      if (savedNutriPlan.title === null) {
+      if (!savedNutriPlan.title) {
         throw new UserInputError("Meal plan title cannot be null.");
       }
 
@@ -120,9 +120,12 @@ const resolvers = {
         );
       }
 
+      if (nutriPlanIndex != null) {
+
       // Remove the meal plan from the user's nutriPlans array
       user.nutriPlans.splice(nutriPlanIndex, 1);
       await user.save();
+      }
 
       // Delete the meal plan from Nutri model
       await Nutri.findByIdAndDelete(nutriPlanId);

@@ -11,7 +11,7 @@ const typeDefs = gql`
 
   type Nutri {
     _id: ID!
-    title: String!
+    title: String
     meals: String
     user: User
   }

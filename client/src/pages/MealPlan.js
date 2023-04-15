@@ -36,7 +36,9 @@ const SavedMealPlans = () => {
   const nutriPlans = data?.nutriPlans || [];
 
   // UPDATE_NUTRI_PLAN_TITLE mutation - to update a meal plan title
-  const [updateTitle] = useMutation(UPDATE_NUTRI_PLAN_TITLE);
+  const [updateTitle] = useMutation(UPDATE_NUTRI_PLAN_TITLE, {
+    refetchQueries: [{ query: QUERY_NUTRI_PLANS }],
+  });
 
   // handleEditTitle function - to handle the edit title button click event
   const handleEditTitle = (nutriPlanId) => {
@@ -46,14 +48,17 @@ const SavedMealPlans = () => {
 
   //handleSaveTitle function - save title button click event
   const handleSaveTitle = async (nutriPlanId) => {
-    if (editedTitle.trim() !== "") {
+    try {
       await updateTitle({
-        variables: { nutriPlanId, title: editedTitle },
-        // Refetch the QUERY_NUTRI_PLANS query to update the list of meal plans with the new title
-        refetchQueries: [{ query: QUERY_NUTRI_PLANS }],
+        variables: {
+          nutriPlanId,
+          title: editedTitle,
+        },
       });
-      // Set the editing state of the title with the given nutriPlanId to false
-      setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: false }));
+      setIsEditing((prev) => ({ ...prev, [nutriPlanId]: false }));
+      setEditedTitle("");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -80,12 +85,14 @@ const SavedMealPlans = () => {
     try {
       const { data } = await deleteNutriPlan({
         variables: { nutriPlanId },
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       });
 
       console.log(data);
     } catch (err) {
       console.error(err);
-
     }
   };
 
@@ -124,7 +131,7 @@ const SavedMealPlans = () => {
               </IconButton>
             )}
           </h2>
-          {nutriPlan.meals.split("\n").map((meal, index) => {
+          {nutriPlan.meals && nutriPlan.meals.split("\n").map((meal, index) => {
             const [mealInfo, mealDetails] = meal.split(":");
             const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(
               mealInfo.trim()
