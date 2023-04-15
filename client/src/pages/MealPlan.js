@@ -3,14 +3,19 @@ import { Card, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Auth from "../utils/auth";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 //use Query Hook
 import { useQuery } from "@apollo/client";
-import { QUERY_NUTRI_PLANS } from "../utils/queries";
+import { QUERY_USER, QUERY_NUTRI_PLANS } from "../utils/queries";
 
 //use Mutation to update the title
 import { useMutation } from "@apollo/client";
 import { UPDATE_NUTRI_PLAN_TITLE } from "../utils/mutations";
+
+// Mutation to delete a meal plan
+import { DELETE_NUTRI_PLAN } from "../utils/mutations";
 
 const SavedMealPlans = () => {
   //Define state variables for editing the title
@@ -20,13 +25,20 @@ const SavedMealPlans = () => {
   //Manage the expanded state of the meal plans
   const [expandedMealPlan, setExpandedMealPlan] = useState(null);
 
+  //Delete Meal Plan mutation
+  const [deleteNutriPlan] = useMutation(DELETE_NUTRI_PLAN, {
+    refetchQueries: [{ query: QUERY_USER }],
+  });
+
   // QUERY_NUTRI_PLANS query to get the list of meal plans from the database
   const { data } = useQuery(QUERY_NUTRI_PLANS);
   console.log(data);
   const nutriPlans = data?.nutriPlans || [];
 
   // UPDATE_NUTRI_PLAN_TITLE mutation - to update a meal plan title
-  const [updateTitle] = useMutation(UPDATE_NUTRI_PLAN_TITLE);
+  const [updateTitle] = useMutation(UPDATE_NUTRI_PLAN_TITLE, {
+    refetchQueries: [{ query: QUERY_NUTRI_PLANS }],
+  });
 
   // handleEditTitle function - to handle the edit title button click event
   const handleEditTitle = (nutriPlanId) => {
@@ -36,14 +48,17 @@ const SavedMealPlans = () => {
 
   //handleSaveTitle function - save title button click event
   const handleSaveTitle = async (nutriPlanId) => {
-    if (editedTitle.trim() !== "") {
+    try {
       await updateTitle({
-        variables: { nutriPlanId, title: editedTitle },
-        // Refetch the QUERY_NUTRI_PLANS query to update the list of meal plans with the new title
-        refetchQueries: [{ query: QUERY_NUTRI_PLANS }],
+        variables: {
+          nutriPlanId,
+          title: editedTitle,
+        },
       });
-      // Set the editing state of the title with the given nutriPlanId to false
-      setIsEditing((prevEditing) => ({ ...prevEditing, [nutriPlanId]: false }));
+      setIsEditing((prev) => ({ ...prev, [nutriPlanId]: false }));
+      setEditedTitle("");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -58,6 +73,26 @@ const SavedMealPlans = () => {
       setExpandedMealPlan(null);
     } else {
       setExpandedMealPlan(nutriPlanId);
+    }
+  };
+
+  // Delete meal Plan
+  const handleDeleteNutriPlan = async (nutriPlanId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    if (!token) {
+      return false;
+    }
+    try {
+      const { data } = await deleteNutriPlan({
+        variables: { nutriPlanId },
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(data);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -96,7 +131,7 @@ const SavedMealPlans = () => {
               </IconButton>
             )}
           </h2>
-          {nutriPlan.meals.split("\n").map((meal, index) => {
+          {nutriPlan.meals && nutriPlan.meals.split("\n").map((meal, index) => {
             const [mealInfo, mealDetails] = meal.split(":");
             const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(
               mealInfo.trim()
@@ -131,6 +166,9 @@ const SavedMealPlans = () => {
           })}
           <IconButton onClick={() => toggleMealPlan(nutriPlan._id)}>
             <MoreHorizIcon />
+          </IconButton>
+          <IconButton onClick={() => handleDeleteNutriPlan(nutriPlan._id)}>
+            <DeleteIcon />
           </IconButton>
         </Card>
       ))}

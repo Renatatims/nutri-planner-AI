@@ -1,4 +1,7 @@
-const { AuthenticationError } = require("apollo-server-express");
+const {
+  AuthenticationError,
+  UserInputError,
+} = require("apollo-server-express");
 const { User } = require("../models");
 const Nutri = require("../models/Nutri");
 const { signToken } = require("../utils/auth");
@@ -71,6 +74,11 @@ const resolvers = {
 
       const savedNutriPlan = await nutriPlan.save();
 
+      // Validate meal plan title
+      if (!savedNutriPlan.title) {
+        throw new UserInputError("Meal plan title cannot be null.");
+      }
+
       user.nutriPlans.push(savedNutriPlan);
       await user.save();
 
@@ -92,6 +100,37 @@ const resolvers = {
       const updatedNutriPlan = await nutriPlan.save();
 
       return updatedNutriPlan;
+    },
+
+    // Delete a meal plan from user's profile
+    deleteNutriPlan: async (parent, { nutriPlanId }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+
+      const user = await User.findById(context.user._id);
+
+      // Check if the user has the meal plan
+      const nutriPlanIndex = user.nutriPlans.findIndex(
+        (plan) => plan._id.toString() === nutriPlanId
+      );
+      if (nutriPlanIndex === -1) {
+        throw new UserInputError(
+          "You don't have this meal plan in your profile."
+        );
+      }
+
+      if (nutriPlanIndex != null) {
+
+      // Remove the meal plan from the user's nutriPlans array
+      user.nutriPlans.splice(nutriPlanIndex, 1);
+      await user.save();
+      }
+
+      // Delete the meal plan from Nutri model
+      await Nutri.findByIdAndDelete(nutriPlanId);
+
+      return user;
     },
   },
 };
