@@ -6,6 +6,12 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Auth from "../utils/auth";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+// Import Icons
+import carbsIcon from "../assets/icons/breadIcon.png";
+import proteinIcon from "../assets/icons/proteinIcon.png";
+import fatIcon from "../assets/icons/fatIcon.png";
+import caloriesIcon from "../assets/icons/caloriesIcon.png";
+
 //use Query Hook
 import { useQuery } from "@apollo/client";
 import { QUERY_USER, QUERY_NUTRI_PLANS } from "../utils/queries";
@@ -143,10 +149,37 @@ const SavedMealPlans = () => {
               ].includes(mealInfo.trim());
               if (
                 expandedMealPlan !== nutriPlan._id &&
-                arr.length - index > 2
+                arr.length - index > 5
               ) {
                 return null; // preview meal plan - no more than 3 lines
               }
+
+              const macroRegex = /carbs|protein|fat|calories/gi; // a regex that matches any of the macro names
+              const macroMatches = mealInfo.match(macroRegex); // an array of any macro names found in mealInfo
+
+              // Get the appropriate icon for the macro
+              let icon;
+              if (macroMatches) {
+                macroMatches.forEach((macro) => {
+                  switch (macro.trim().toLowerCase()) {
+                    case "carbs":
+                      icon = carbsIcon;
+                      break;
+                    case "protein":
+                      icon = proteinIcon;
+                      break;
+                    case "fat":
+                      icon = fatIcon;
+                      break;
+                    case "calories":
+                      icon = caloriesIcon;
+                      break;
+                    default:
+                      break;
+                  }
+                });
+              }
+
               return (
                 <div className="meal-section" key={index}>
                   {isHeader ? (
@@ -165,8 +198,14 @@ const SavedMealPlans = () => {
                         fontSize: 20,
                       }}
                     >
-                      {mealInfo}
-                      {mealDetails}
+                      {icon && (
+                        <img
+                          src={icon}
+                          alt={`${mealInfo} icon`}
+                          width={35}
+                          height={35}
+                        />
+                      )} {mealInfo}: {mealDetails}
                     </p>
                   )}
                 </div>
