@@ -131,39 +131,47 @@ const SavedMealPlans = () => {
               </IconButton>
             )}
           </h2>
-          {nutriPlan.meals && nutriPlan.meals.split("\n").map((meal, index) => {
-            const [mealInfo, mealDetails] = meal.split(":");
-            const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner", "Total Daily Macros"].includes(
-              mealInfo.trim()
-            );
-            if (expandedMealPlan !== nutriPlan._id && index >= 3) {
-              return null; // preview meal plan - no more than 3 lines
-            }
-            return (
-              <div className="meal-section" key={index}>
-                {isHeader ? (
-                  <h2
-                    style={{
-                      paddingLeft: "20px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {mealInfo}
-                  </h2>
-                ) : (
-                  <p
-                    style={{
-                      paddingLeft: "30px",
-                      fontSize: 20,
-                    }}
-                  >
-                    {mealInfo}
-                    {mealDetails}
-                  </p>
-                )}
-              </div>
-            );
-          })}
+          {nutriPlan.meals &&
+            nutriPlan.meals.split("\n").map((meal, index, arr) => {
+              const [mealInfo, mealDetails] = meal.split(":");
+              const isHeader = [
+                "Breakfast",
+                "Snack",
+                "Lunch",
+                "Dinner",
+                "Total Daily Macros",
+              ].includes(mealInfo.trim());
+              if (
+                expandedMealPlan !== nutriPlan._id &&
+                arr.length - index > 2
+              ) {
+                return null; // preview meal plan - no more than 3 lines
+              }
+              return (
+                <div className="meal-section" key={index}>
+                  {isHeader ? (
+                    <h2
+                      style={{
+                        paddingLeft: "20px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {mealInfo}
+                    </h2>
+                  ) : (
+                    <p
+                      style={{
+                        paddingLeft: "30px",
+                        fontSize: 20,
+                      }}
+                    >
+                      {mealInfo}
+                      {mealDetails}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           <IconButton onClick={() => toggleMealPlan(nutriPlan._id)}>
             <MoreHorizIcon />
           </IconButton>

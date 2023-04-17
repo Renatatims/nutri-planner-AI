@@ -91,8 +91,8 @@ function NutriChat() {
     Dinner
     - (dinner info in bullet points)
     Total macros: (calculate total macros quantity for each - display in one line: carbs, protein, fat, calories)
-    Total Daily Macros (header): 
-    - (calculate Total daily macros - display in one bullet point: total daily carbs, total daily protein, total daily fat, total daily calories)`;
+    Total Daily Macros 
+    - (calculate Total daily macros - display in one bullet point: total daily carbs, total daily protein, total daily fat, total daily calories)"`;
     const response = await getResponse(prompt);
     console.log(response);
     setResponse(response);
