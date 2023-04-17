@@ -40,7 +40,8 @@ async function getResponse(userInput) {
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-    });
+      stop: "\n\nTotal daily calories:"
+     });
 
     return response.data.choices[0].text;
   } catch (error) {
@@ -73,28 +74,32 @@ function NutriChat() {
         : "enough protein"
     }, and ${
       caloriesCount ? caloriesCount + " calories" : "enough calories"
-    }. To build this meal plan consider the following information:${additionalInfo}.  
-    I want the response to be rendered in the specific format, and please don't add any other information before or after the meal plan ( I don't want the answer to start with a paragraph, don't want any "note" included after the meal plan, just the meal plan - answer starting with breakfast, and every single food in a bullet point): 
+    }. To build this meal plan consider the following information (if any):${additionalInfo}.  
+    I want a straight response to be rendered using the specific format below:
     "Breakfast
-    - (breakfast info inside)
-  Snack
-    - (snack info inside)
-  Lunch
-   - (Lunch info inside)
-  Snack
-    - (snack info inside)
-  Dinner
-    - (dinner info inside)
-  Snack
-    - (snack info inside)
-  "`;
+    - (breakfast info in bullet points)
+    Total macros: (calculate total macros quantity for each - display in one line: carbs, protein, fat, calories)
+    Snack
+    - (snack info in bullet points)
+    Total macros: (calculate total macros quantity for each - display in one line: carbs, protein, fat, calories)
+    Lunch
+   - (Lunch info in bullet points)
+   Total macros: (calculate total macros quantity for each - display in one line: carbs, protein, fat, calories)
+    Snack
+    - (snack info in bullet points)
+    Total macros: (calculate total macros quantity for each - display in one line: carbs, protein, fat, calories)
+    Dinner
+    - (dinner info in bullet points)
+    Total macros: (calculate total macros quantity for each - display in one line: carbs, protein, fat, calories)
+    Total Daily Macros (header): 
+    - (calculate Total daily macros - display in one bullet point: total daily carbs, total daily protein, total daily fat, total daily calories)`;
     const response = await getResponse(prompt);
     console.log(response);
     setResponse(response);
   };
   const [saveNutriPlan] = useMutation(SAVE_NUTRI_PLAN);
 
- // Define the handleSaveMealPlan function
+  // Define the handleSaveMealPlan function
   const handleSaveMealPlan = async () => {
     try {
       // Call the saveNutriPlan mutation with the nutriPlan object
@@ -106,10 +111,12 @@ function NutriChat() {
       console.error(error);
 
       // Show an error message to the user
-      alert("An error occurred while saving the nutri plan. Please try again later.");
+      alert(
+        "An error occurred while saving the nutri plan. Please try again later."
+      );
     }
   };
- 
+
   return (
     <>
       <Box
@@ -231,6 +238,7 @@ function NutriChat() {
                 "Snack",
                 "Lunch",
                 "Dinner",
+                "Total Daily Macros"
               ].includes(mealInfo.trim());
               return (
                 <div className="meal-section" key={index}>

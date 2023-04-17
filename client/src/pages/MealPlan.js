@@ -133,7 +133,7 @@ const SavedMealPlans = () => {
           </h2>
           {nutriPlan.meals && nutriPlan.meals.split("\n").map((meal, index) => {
             const [mealInfo, mealDetails] = meal.split(":");
-            const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner"].includes(
+            const isHeader = ["Breakfast", "Snack", "Lunch", "Dinner", "Total Daily Macros"].includes(
               mealInfo.trim()
             );
             if (expandedMealPlan !== nutriPlan._id && index >= 3) {
