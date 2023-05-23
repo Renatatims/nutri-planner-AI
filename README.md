@@ -6,6 +6,12 @@
 
 The Nutri Planner AI app allows users to generate personalized meal plans based on their input parameters: weight, height, gender, food restrictions, protein count, calorie count, and any additional information. The app integrates with OPENAI API to generate optimized meal plans.
 
+![nutri-planner AI App Screenshot](/client/src/assets/screenshots/Capture1.PNG)
+
+## Link to application
+
+Application available at: https://nutri-planner-ai.herokuapp.com/
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -63,6 +69,8 @@ Users can input their weight, height, gender, food restrictions, protein count, 
 - The app displays the saved meal plans in the form of cards on the meals page.
 - Each card shows a preview of the meal plan, including protein count, calorie count, carbs, and fat content.
 - Users can expand a meal plan card to view the entire meal plan.
+
+![nutri-planner AI App Screenshot](/client/src/assets/screenshots/Capture2.PNG)
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
