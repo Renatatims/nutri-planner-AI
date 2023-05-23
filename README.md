@@ -65,6 +65,8 @@ Users can input their weight, height, gender, food restrictions, protein count, 
 - Each saved meal plan can have a personalized title.
 - Users can edit the title of their saved meal plans.
 
+![nutri-planner AI App Screenshot](/client/src/assets/screenshots/Capture3.PNG)
+
 ### Meal Plan Cards and Previews
 - The app displays the saved meal plans in the form of cards on the meals page.
 - Each card shows a preview of the meal plan, including protein count, calorie count, carbs, and fat content.
