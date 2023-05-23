@@ -76,7 +76,7 @@ function LoginModal(props) {
         <Stack>
           <a href="/">
             <img
-              src={require("../../assets/logo/nutriLogo.png")}
+              src={require("../../assets/logo/nutriLogo_modal.png")}
               alt="icon"
               height="300px"
             ></img>
